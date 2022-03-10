@@ -8,7 +8,7 @@
 			"js": ["content.js"]
 		}
 	],
-	"permissions": ["storage","tabs","background"],
+	"permissions": ["storage","tabs","background","downloads"],
 	"action": {
 		"default_popup": "popup.html"
 	},
