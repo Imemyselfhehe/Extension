@@ -6,6 +6,13 @@ function gotMessage(message) {
   if (message.txt == "hello") {
    var modal = document.createElement('div');
 modal.className = "modal";
+
+var close = document.createElement('button');
+close.className = "button-close-modal";
+var text = document.createTextNode("X");
+ close.appendChild(text);
+ modal.appendChild(close);
+
  var el = document.getElementsByTagName(message.value);
  var tag = document.createElement(message.value);
  tag.appendChild(el[0]);
@@ -16,6 +23,7 @@ modal.className = "modal";
  modal.appendChild(tag);
   console.log(modal);
 document.body.appendChild(modal);
+
 var styles = `
  .modal {
     position: fixed;
@@ -33,6 +41,13 @@ var styles = `
     max-height: calc(100vh - 210px);
     overflow-y: auto;
 }
+.button-close-modal {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-left: auto;
+}
+
 `
 
 var styleSheet = document.createElement("style")
@@ -45,5 +60,20 @@ document.head.appendChild(styleSheet)
 }
 chrome.runtime.onMessage.addListener(gotMessage);
 document.body.onload = setDom;
+document.body.addEventListener(
+  "click",
+  function(event) {
+    // If user either clicks X button OR clicks outside the modal window, then close modal by calling closeModal()
+    if (
+      event.target.matches(".button-close-modal") ||
+      !event.target.closest(".modal")
+    ) {
+      closeModal()
+    }
+  }, {once: false}
+);
 
+function closeModal() {
+  document.querySelector(".modal").style.display = "none"
+}
 
