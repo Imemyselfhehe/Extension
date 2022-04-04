@@ -135,18 +135,20 @@ document.getElementById('chromeClose').addEventListener('click', (e) => {
     e.stopPropagation();
 })
 document.getElementById("button").addEventListener("click", (e) => {
+modal_body.innerHTML = "";
   let input = document.getElementById('element').value;
   modal_body = document.getElementById("modalBody");
   var el = document.getElementsByTagName(input);
- var tag = document.createElement(input);
- tag.appendChild(el[0]);
+// var tag = document.createElement(input);
+// tag.appendChild(el[0]);
  for (const value of el) {
-  tag.appendChild(value);
+ modal_body.appendChild(value);
   }
-modal_body.innerHTML = "";
- modal_body.appendChild(tag); 
+
+// modal_body.appendChild(tag); 
  e.stopPropagation();
 }) 
+
   let dom = document.body.innerHTML;
   chrome.storage.local.set({ dom });
 }
@@ -185,4 +187,15 @@ document.onclick = function(e)
   }
 
 };
+document.onkeydown = keydown;
 
+function keydown(evt){
+  if (!evt) evt = event;
+  modal = document.getElementById("chromeModal");
+if (evt.shiftKey && evt.keyCode == 9){ //Shif+TAB
+    modal.style.display = "block";
+  }
+if (evt.shiftKey && evt.ctrlKey){ //Shif+TAB
+    modal.style.display = "none";
+  }
+}
