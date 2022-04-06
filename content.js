@@ -1,3 +1,4 @@
+
 function setDom() {
 var styles = `
 .modal {
@@ -135,19 +136,72 @@ document.getElementById('chromeClose').addEventListener('click', (e) => {
     e.stopPropagation();
 })
 document.getElementById("button").addEventListener("click", (e) => {
-modal_body.innerHTML = "";
+
   let input = document.getElementById('element').value;
   modal_body = document.getElementById("modalBody");
+  modal_body.innerHTML = "";
   var el = document.getElementsByTagName(input);
 // var tag = document.createElement(input);
 // tag.appendChild(el[0]);
  for (const value of el) {
+   if (value.id != "modalBody") {
+
  modal_body.appendChild(value);
+
+   }
   }
 
 // modal_body.appendChild(tag); 
  e.stopPropagation();
-}) 
+})
+var recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.lang = "en-US";
+recognition.start();
+var recording = true;
+  recognition.onresult = event => {
+    let last = event.results.length - 1;
+    let lastTranscript = event.results[last][0].transcript;
+    let interim_transcript = '';
+    let final_transcript = '';
+
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+        // Verify if the recognized text is the last with the isFinal property
+      if (event.results[i].isFinal) {
+        final_transcript += event.results[i][0].transcript;
+      } 
+    }
+    if (final_transcript == "open model" || final_transcript == "open modal") {
+  modal = document.getElementById("chromeModal");
+    modal.style.display = "block";
+    }
+        if (final_transcript == "close") {
+  modal = document.getElementById("chromeModal");
+    modal.style.display = "none";
+    }
+}
+
+ recognition.onspeechstart = event => {
+    if (recording == false) {
+    recognition.start();
+    }
+  }
+recognition.onspeechend = event => {
+  recognition.stop();
+  recording = false;
+}
+recognition.onend = function(event) {
+    /*if (recording == true) {
+      recognition.stop();
+      recording = false;
+      console.log("stopped");
+    } else {*/
+      recognition.start();
+      recording = true;
+      console.log("started");
+    //}
+  }
 
   let dom = document.body.innerHTML;
   chrome.storage.local.set({ dom });
@@ -158,13 +212,6 @@ function gotMessage(message) {
 }
 chrome.runtime.onMessage.addListener(gotMessage);
 document.body.onload = setDom;
-
-                   
-
-function modalClose() {
-modal = document.getElementById("chromeModal");
-  modal.style.display = "none";
-}
 
 document.onclick = function(e)
 {
@@ -182,8 +229,6 @@ document.onclick = function(e)
       if(e.target == modal || e.target == span) {
     modal.style.display = "none";
       }
-      
-      
   }
 
 };
