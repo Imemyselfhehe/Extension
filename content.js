@@ -4,7 +4,7 @@ var styles = `
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 10000; /* Sit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
@@ -69,7 +69,13 @@ var styles = `
   background-color: #5cb85c;
   color: white;
 }
-
+#element {
+  color: black;
+}
+#button {
+  border: 1px solid black;
+  background-color: gray;
+}
 ` 
 
 var styleSheet = document.createElement("style");
@@ -101,7 +107,7 @@ document.head.appendChild(styleSheet);
          var input = document.createElement('input');
          input.type = "text";
          input.name = "fname";
-         input.value = "p";
+         //input.value = "p";
          input.id = "element";
          modal_header.appendChild(text);
          modal_header.appendChild(input);
@@ -123,7 +129,8 @@ document.head.appendChild(styleSheet);
           modal_footer.className = "modal-footer";
           var modal = document.createElement('div');
           modal.className = "modal";
-          modal.id = "chromeModal"
+          modal.id = "chromeModal";
+          modal.backdrop = "false";
           modal_content.appendChild(modal_header);
           modal_content.appendChild(modal_body);
           modal_content.appendChild(modal_footer);
@@ -140,13 +147,23 @@ document.getElementById("button").addEventListener("click", (e) => {
   let input = document.getElementById('element').value;
   modal_body = document.getElementById("modalBody");
   modal_body.innerHTML = "";
-  var el = document.getElementsByTagName(input);
+  var el;
+  
+  if(input == "div") {
+    el = document.querySelectorAll("body > div");
+  } else {
+ el = document.getElementsByTagName(input);
+  }
+    console.log("2");
+
 // var tag = document.createElement(input);
 // tag.appendChild(el[0]);
- for (const value of el) {
-   if (value.id != "modalBody") {
+ for (const value of Array.from(el)) {
+   if (value.className.indexOf("modal") == -1) {
+const clone = value.cloneNode(true);
+console.log(el);
 
- modal_body.appendChild(value);
+ modal_body.appendChild(clone);
 
    }
   }
@@ -161,6 +178,7 @@ recognition.continuous = false;
 recognition.start();
 var recording = true;
   recognition.onresult = event => {
+    //console.log("here");
     let last = event.results.length - 1;
     let lastTranscript = event.results[last][0].transcript;
     let interim_transcript = '';
@@ -170,8 +188,13 @@ var recording = true;
         // Verify if the recognized text is the last with the isFinal property
       if (event.results[i].isFinal) {
         final_transcript += event.results[i][0].transcript;
-      } 
+      }else {
+    interim_transcript += event.results[i][0].transcript;
+    //console.log(interim_transcript);
+    //console.log(event.resultIndex);
+  } 
     }
+    
     if (final_transcript == "open model" || final_transcript == "open modal") {
   modal = document.getElementById("chromeModal");
     modal.style.display = "block";
@@ -180,16 +203,23 @@ var recording = true;
   modal = document.getElementById("chromeModal");
     modal.style.display = "none";
     }
+    //event.stopPropagation();
 }
 
  recognition.onspeechstart = event => {
     if (recording == false) {
     recognition.start();
+    //recording = true;
     }
+    //event.stopPropagation();
+
   }
 recognition.onspeechend = event => {
+  //recognition.destroy();
   recognition.stop();
   recording = false;
+  //event.stopPropagation();
+
 }
 recognition.onend = function(event) {
     /*if (recording == true) {
@@ -199,8 +229,10 @@ recognition.onend = function(event) {
     } else {*/
       recognition.start();
       recording = true;
-      console.log("started");
+      //console.log("started");
     //}
+    //event.stopPropagation();
+
   }
 
   let dom = document.body.innerHTML;
@@ -224,7 +256,7 @@ document.onclick = function(e)
       console.log(modal);
 
     } else {
-      console.log("here");
+      //console.log("here");
  
       if(e.target == modal || e.target == span) {
     modal.style.display = "none";
