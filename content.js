@@ -115,6 +115,10 @@ document.head.appendChild(styleSheet);
          var br = document.createElement('br');
          modal_header.appendChild(br);
          modal_header.appendChild(br);
+         
+         var br = document.createElement('br');
+         modal_header.appendChild(br);
+         modal_header.appendChild(br);
          /*
          form.appendChild(input1);
          form.appendChild(br);*/
@@ -172,13 +176,13 @@ console.log(el);
  e.stopPropagation();
 })
 var recognition = new webkitSpeechRecognition() || new SpeechRecognition();
-recognition.continuous = false;
+recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = "en-US";
 recognition.start();
 var recording = true;
   recognition.onresult = event => {
-    //console.log("here");
+    console.log("result");
     let last = event.results.length - 1;
     let lastTranscript = event.results[last][0].transcript;
     let interim_transcript = '';
@@ -190,23 +194,27 @@ var recording = true;
         final_transcript += event.results[i][0].transcript;
       }else {
     interim_transcript += event.results[i][0].transcript;
-    //console.log(interim_transcript);
+    console.log(interim_transcript);
     //console.log(event.resultIndex);
   } 
     }
     
-    if (final_transcript == "open model" || final_transcript == "open modal") {
+    if (final_transcript == "open model" || final_transcript == "open modal"|| interim_transcript == "open model" || interim_transcript == "open modal") {
   modal = document.getElementById("chromeModal");
     modal.style.display = "block";
+    modal_body = document.getElementById("modalBody");
+    modal_body.innerHTML = "";
+    input = document.getElementById('element');
+    input.value = "";
     }
-        if (final_transcript == "close") {
+        if (final_transcript == "close"||  interim_transcript == "close") {
   modal = document.getElementById("chromeModal");
     modal.style.display = "none";
     }
     //event.stopPropagation();
 }
 
- recognition.onspeechstart = event => {
+ /*recognition.onspeechstart = event => {
     if (recording == false) {
     recognition.start();
     //recording = true;
@@ -216,24 +224,24 @@ var recording = true;
   }
 recognition.onspeechend = event => {
   //recognition.destroy();
-  recognition.stop();
-  recording = false;
+  //recognition.stop();
+  //recording = false;
   //event.stopPropagation();
 
 }
 recognition.onend = function(event) {
-    /*if (recording == true) {
+    if (recording == true) {
       recognition.stop();
       recording = false;
       console.log("stopped");
-    } else {*/
+    } else {
       recognition.start();
       recording = true;
-      //console.log("started");
+      console.log("started");
     //}
     //event.stopPropagation();
 
-  }
+  }*/
 
   let dom = document.body.innerHTML;
   chrome.storage.local.set({ dom });
@@ -253,6 +261,10 @@ document.onclick = function(e)
     if(e.target.attributes.href == null && modal.style.display != "block"){
      
       modal.style.display = "block";
+      modal_body = document.getElementById("modalBody");
+      modal_body.innerHTML = "";
+      input = document.getElementById('element');
+      input.value = "";
       console.log(modal);
 
     } else {
@@ -271,6 +283,10 @@ function keydown(evt){
   modal = document.getElementById("chromeModal");
 if (evt.shiftKey && evt.keyCode == 9){ //Shif+TAB
     modal.style.display = "block";
+    modal_body = document.getElementById("modalBody");
+    modal_body.innerHTML = "";
+    input = document.getElementById('element');
+    input.value = "";
   }
 if (evt.shiftKey && evt.ctrlKey){ //Shif+TAB
     modal.style.display = "none";
