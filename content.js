@@ -1,5 +1,6 @@
 
 function setDom() {
+  /* Style elements for modal body, header, footer, the input field and submit button */
   var styles = `
   .modal {
     display: none; /* Hidden by default */
@@ -82,6 +83,8 @@ function setDom() {
   var styleSheet = document.createElement("style");
   styleSheet.innerText = styles;
   document.head.appendChild(styleSheet);
+
+  /* Adding close element at the top of the modal*/
   var close_content = document.createElement('div');
   close_content.id = "chromeClose";
   var span = document.createElement('span');
@@ -89,16 +92,23 @@ function setDom() {
   var text = document.createTextNode("X");
   span.appendChild(text);
   close_content.appendChild(span);
+
+  /* Adding modal content element where the filtered content will be added */
   var modal_content = document.createElement('div');
   modal_content.className = "modal-content";
+
+  /* Adding modal header element where the input field will be added */
   var modal_header = document.createElement('div');
   modal_header.className = "modal-header";
   modal_header.appendChild(close_content);
+
+    /* Adding modal body element where the filtered content will be added */
   var modal_body = document.createElement('div');
   modal_body.className = "modal-body";
   modal_body.id = "modalBody";
   var text = document.createTextNode("HTML Tag   ");
-   
+  
+  /* Adding an input field where the tag of the elements to be filtered is input'ed */
   var input = document.createElement('input');
   input.type = "text";
   input.name = "fname";
@@ -116,23 +126,31 @@ function setDom() {
   button.id = "button";
   var text = document.createTextNode("Submit");
   button.appendChild(text);
-  modal_header.appendChild(button);     
+  modal_header.appendChild(button);
+
+  /* Adding a footer to the modal */  
   var modal_footer = document.createElement('div');
   modal_footer.className = "modal-footer";
   var modal = document.createElement('div');
   modal.className = "modal";
   modal.id = "chromeModal";
   modal.backdrop = "false";
+
+  /* Appending all the elements to the modal */
   modal_content.appendChild(modal_header);
   modal_content.appendChild(modal_body);
   modal_content.appendChild(modal_footer);
   modal.appendChild(modal_content);
   document.body.appendChild(modal);
+
+  /* Adding functionality of the close button */
   document.getElementById('chromeClose').addEventListener('click', (e) => {
     modal = document.getElementById("chromeModal");
     modal.style.display = "none";
     e.stopPropagation();
   })
+
+  /* Adding functionality of the submit button */
   document.getElementById("button").addEventListener("click", (e) => {
     let input = document.getElementById('element').value;
     modal_body = document.getElementById("modalBody");
@@ -153,6 +171,8 @@ function setDom() {
     }
     e.stopPropagation();
   })
+
+  /* Adding speech recognition element to the extention */
   var recognition = new webkitSpeechRecognition();
   recognition.continuous = false;
   recognition.interimResults = true;
@@ -204,6 +224,7 @@ function gotMessage(message) {
 chrome.runtime.onMessage.addListener(gotMessage);
 document.body.onload = setDom;
 
+/* Defining functionality depending on the mouse-click on the webpage */
 document.onclick = function(e)
 {
   modal = document.getElementById("chromeModal");
@@ -224,6 +245,7 @@ document.onclick = function(e)
 
 document.onkeydown = keydown;
 
+/* Defining functionality depending on the key-press */
 function keydown(evt){
   if (!evt) evt = event;
   modal = document.getElementById("chromeModal");
