@@ -60,6 +60,8 @@ var styles = `
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
+  z-index: 10000;
+  position: relative;
 }
 
 .modal-body {padding: 2px 16px;}
@@ -175,14 +177,12 @@ console.log(el);
 // modal_body.appendChild(tag); 
  e.stopPropagation();
 })
-var recognition = new webkitSpeechRecognition() || new SpeechRecognition();
-recognition.continuous = true;
+var recognition = new webkitSpeechRecognition();
+recognition.continuous = false;
   recognition.interimResults = true;
   recognition.lang = "en-US";
-recognition.start();
-var recording = true;
   recognition.onresult = event => {
-    console.log("result");
+    //console.log("here");
     let last = event.results.length - 1;
     let lastTranscript = event.results[last][0].transcript;
     let interim_transcript = '';
@@ -199,7 +199,7 @@ var recording = true;
   } 
     }
     
-    if (final_transcript == "open model" || final_transcript == "open modal"|| interim_transcript == "open model" || interim_transcript == "open modal") {
+    if (final_transcript == "open model" || final_transcript == "open modal") {
   modal = document.getElementById("chromeModal");
     modal.style.display = "block";
     modal_body = document.getElementById("modalBody");
@@ -207,44 +207,22 @@ var recording = true;
     input = document.getElementById('element');
     input.value = "";
     }
-        if (final_transcript == "close"||  interim_transcript == "close") {
+        if (final_transcript == "close") {
   modal = document.getElementById("chromeModal");
     modal.style.display = "none";
     }
     //event.stopPropagation();
 }
 
- /*recognition.onspeechstart = event => {
-    if (recording == false) {
-    recognition.start();
-    //recording = true;
-    }
-    //event.stopPropagation();
+recognition.addEventListener('end', () => {
+  console.log('end')
+  recognition.start();
+})
 
-  }
-recognition.onspeechend = event => {
-  //recognition.destroy();
-  //recognition.stop();
-  //recording = false;
-  //event.stopPropagation();
+recognition.start();
 
-}
-recognition.onend = function(event) {
-    if (recording == true) {
-      recognition.stop();
-      recording = false;
-      console.log("stopped");
-    } else {
-      recognition.start();
-      recording = true;
-      console.log("started");
-    //}
-    //event.stopPropagation();
-
-  }*/
-
-  let dom = document.body.innerHTML;
-  chrome.storage.local.set({ dom });
+let dom = document.body.innerHTML;
+chrome.storage.local.set({ dom });
 }
 function gotMessage(message) {
 
