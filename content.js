@@ -247,7 +247,6 @@ document.onkeydown = keydown;
 
 /* Defining functionality depending on the key-press */
 function keydown(evt){
-  if (!evt) evt = event;
   modal = document.getElementById("chromeModal");
   if (evt.shiftKey && evt.keyCode == 9){ //Shif+TAB
       modal.style.display = "block";
@@ -256,7 +255,7 @@ function keydown(evt){
       input = document.getElementById('element');
       input.value = "";
     }
-  if (evt.shiftKey && evt.ctrlKey){ //Shif+ CTRL
+  if (evt.shiftKey && evt.ctrlKey){ //CTRL+Shift
       modal.style.display = "none";
     }
 }
